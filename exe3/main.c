@@ -15,6 +15,7 @@ const int LED_PIN_G = 6;
 QueueHandle_t xQueueButId;
 QueueHandle_t xQueueButId2;
 
+
 void led_1_task(void *p) {
     gpio_init(LED_PIN_R);
     gpio_set_dir(LED_PIN_R, GPIO_OUT);
@@ -52,7 +53,7 @@ void btn_1_task(void *p) {
             } else {
                 delay = 100;
             }
-            printf("delay %d\n", delay);
+            printf("delay btn %d \n", delay);
             xQueueSend(xQueueButId, &delay, 0);
         }
     }
@@ -95,13 +96,11 @@ void btn_2_task(void *p) {
             } else {
                 delay = 100;
             }
-            printf("delay %d \n", delay);
+            printf("delay btn %d \n", delay);
             xQueueSend(xQueueButId2, &delay, 0);
         }
     }
 }
-
-
 
 int main() {
     stdio_init_all();
@@ -114,7 +113,6 @@ int main() {
     xTaskCreate(btn_1_task, "BTN_Task 1", 256, NULL, 1, NULL);
     xTaskCreate(led_2_task, "LED_Task 2", 256, NULL, 1, NULL);
     xTaskCreate(btn_2_task, "BTN_Task 2", 256, NULL, 1, NULL);
-
 
     vTaskStartScheduler();
 
