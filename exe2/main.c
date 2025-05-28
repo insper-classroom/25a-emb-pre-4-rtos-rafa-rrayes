@@ -22,6 +22,7 @@ void led_1_task(void *p) {
   int delay = 250;
 
   while (true) {
+
     if (xSemaphoreTake(xSemaphore_r, pdMS_TO_TICKS(500)) == pdTRUE) {
       gpio_put(LED_PIN_R, 1);
       vTaskDelay(pdMS_TO_TICKS(delay));
@@ -53,6 +54,7 @@ void led_2_task(void *p) {
   int delay = 250;
 
   while (true) {
+
     if (xSemaphoreTake(xSemaphore_g, pdMS_TO_TICKS(500)) == pdTRUE) {
       gpio_put(LED_PIN_G, 1);
       vTaskDelay(pdMS_TO_TICKS(delay));
@@ -63,6 +65,10 @@ void led_2_task(void *p) {
 }
 
 void btn_2_task(void *p) {
+  gpio_init(BTN_PIN_G);
+  gpio_set_dir(BTN_PIN_G, GPIO_IN);
+  gpio_pull_up(BTN_PIN_G);
+
   while (true) {
     if (!gpio_get(BTN_PIN_G)) {
       while (!gpio_get(BTN_PIN_G)) {
@@ -74,15 +80,11 @@ void btn_2_task(void *p) {
 }
 
 int main() {
-  
   stdio_init_all();
-
-  gpio_init(BTN_PIN_G);
-  gpio_set_dir(BTN_PIN_G, GPIO_IN);
-  gpio_pull_up(BTN_PIN_G);
   printf("Start RTOS \n");
 
   xSemaphore_r = xSemaphoreCreateBinary();
+  xSemaphore_g = xSemaphoreCreateBinary();
 
   xTaskCreate(led_1_task, "LED_Task 1", 256, NULL, 1, NULL);
   xTaskCreate(btn_1_task, "BTN_Task 1", 256, NULL, 1, NULL);
